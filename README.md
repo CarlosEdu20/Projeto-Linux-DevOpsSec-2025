@@ -213,6 +213,11 @@ Para executar o script use o comanndo dentro da pasta:
 Após rodar o script, a saida esperada deve ser essa:
 ```Serviço Online```
 Este log é armazenado no arquivo dentro da pasta do sistema ** /var/log/monitoramento.log**
+```
+[2025-06-30 09:10:01] O servidor NGINX está funcionando (HTTP 200) 
+Serviço Online
+
+```
 
 
 ### Passo 2: Parar o Nginx
@@ -229,12 +234,20 @@ Depois dessa execução, a saida mostrada será:
 Serviço indisponível
 ```
 Este log também é armazenado no arquivo dentro da pasta do sistema ** /var/log/monitoramento.log**
+```
+[2025-06-30 09:13:02] O servidor NGINX está fora do ar (HTTP 000)  
+Serviço indisponível
+```
 
 Após isso, aguarde a execução do cron.
 
 
 ### Etapa 3: Alerta emitido no discord
-O webhook dispará um processo assim que o cron detectar que o servidor. Assim como mostra nessa imagem:
+O webhook dispará um processo assim que o cron detectar que o servidor está fora do ar. Como mostra essa imagem:
+![image](https://github.com/user-attachments/assets/44c511c2-5e7d-4ad8-a5fa-62218724facc)
+
+Isso significa que o script de monitoramento está funcionando com sucesso.
+
 
 
 
