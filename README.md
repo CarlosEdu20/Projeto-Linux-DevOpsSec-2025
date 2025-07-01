@@ -17,6 +17,82 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 - Serviço cron Instalado
 - WebHook do discord com URL + token de acesso [Como criar um Webhook no discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
+# Etapa 1: Configuração de ambiente na AWS
+### Passo 1: Criar uma VPC
+Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, iremos usar essa nuvem para subir as instâncias da EC2.
+
+#### Configurações utilizadas:
+
+- **Recursos a serem criados**: `Somente VPC`
+- **Tag de nome**: `VPC_Projeto` *(ou outro nome descritivo)*
+- **Bloco CIDR IPv4**: `10.0.0.0/16`  
+  *(ou `10.0.0.0/24`, se preferir algo mais limitado)*
+- **Bloco CIDR IPv6**: `Nenhum bloco CIDR IPv6`
+- **Localização**: `Padrão`
+
+### Obervações: 
+- O bloco `10.0.0.0/16` permite criar múltiplas sub-redes, como públicas e privadas.
+
+### Passo 2: Configurar duas sub-redes públicas:
+Com a VPC criada, configure duas sub-redes públicas — uma em cada zona de disponibilidade — para permitir acesso externo à instância EC2. E caso alguma região der falha, a outra consegue sustentar a rede.
+
+#### Sub-rede pública 1: 
+- **Nome**: `Public-Subnet-1`
+- **VPC associada**: `VPC_Projeto`
+- **Zona de disponibilidade**: `us-east-2a`
+- **Bloco CIDR IPv4**: `10.0.1.0/24`
+  
+#### Sub-rede pública 2:
+- **Nome**: `Public-Subnet-2`
+- **VPC associada**: `VPC_Projeto`
+- **Zona de disponibilidade**: `us-east-2b`
+- **Bloco CIDR IPv4**: `10.0.2.0/24`
+
+### Passo 3: Configurar duas sub-redes privadas:
+As sub-redes privadas são utilizadas para recursos internos que **não precisam de acesso direto à internet**, como bancos de dados, containers internos, entre outros.
+
+#### Sub-rede privada 1: 
+- **Nome**: `Private-Subnet-1`
+- **VPC associada**: `VPC_Projeto`
+- **Zona de disponibilidade**: `us-east-2a`
+- **Bloco CIDR IPv4**: `10.0.3.0/24`
+
+#### Sub-rede privada 2:
+- **Nome**: `Private-Subnet-2`
+- **VPC associada**: `VPC_Projeto`
+- **Zona de disponibilidade**: `us-east-2b`
+- **Bloco CIDR IPv4**: `10.0.4.0/24`
+
+### Passo 4: Criar um Internet Gateway e conectá-lo às sub-redes públicas
+Para que as instâncias nas sub-redes públicas tenham acesso à internet, é necessário criar e configurar um **Internet Gateway (IGW)** e configurar uma tabela de rotas públicas.
+
+#### Etapas:
+
+- Vá para o serviço **VPC** no console da AWS.
+- No menu lateral, clique em **Gateways da Internet > Criar gateway da internet**.
+- Preencha:
+   - **Nome**: `IGW_Projeto`
+- Clique em **Criar**
+- Após criado, clique em **Ações > Anexar à VPC** e selecione a VPC: `VPC_Projeto`
+
+#### Criar e configurar a tabela de rotas públicas:
+
+1. No menu da VPC, vá em **Tabelas de rotas > Criar tabela de rotas**
+   - **Nome**: `Public-Route-Table`
+   - **VPC**: `VPC_Projeto`
+2. Após criada:
+   - Vá em **Rotas > Editar rotas**
+   - Adicione:
+     - **Destino**: `0.0.0.0/0`
+     - **Destino**: selecione o Internet Gateway (`IGW_Projeto`)
+3. Vá para a aba **Associações de sub-rede**
+   - Clique em **Editar associações**
+   - Marque:
+     - `Public-Subnet-1`
+     - `Public-Subnet-2`
+
+
+
 # Etapa 2: Configuração e instalação do servidor Web
 ### Passo 1: Instalar o Nginx no (Ubuntu/Debian) e o cron
 Execute o comando de atualização e instalação sendo **root** ou usando o 'sudo'.
