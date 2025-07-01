@@ -2,8 +2,7 @@
 
 
 ## Objetivo: 
-Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desensolver e testar habilidades em Linux, AWS e automação de
-processos através da configuração de um ambiente de servidor web monitorado.
+Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desensolver e testar habilidades em Linux, AWS e automação de processos através da configuração de um ambiente de servidor web monitorado.
 
 ## Tecnologias Usadas:
 - Shell script
@@ -36,10 +35,10 @@ Crie e personalize a página HTML da forma que preferir:
 ```
 sudo nano /var/www/html/index.html
 ```
-Essa pagina será exibida quando você acessar o IP público da sua instância via navegador.
+Essa página será exibida quando você acessar o IP público da sua instância via navegador web.
 
 ### Passo 3: Configure o Nginx para servir a página corretamente 
-Abra o arquivo de configuração do nginx e certifique-se de que a seção **server** esteja assim:
+Abra o arquivo de configuração do Nginx com um editor de texto e certifique-se de que a seção **server** esteja assim:
 
 ```
 sudo nano /etc/nginx/sites-available/default
@@ -49,7 +48,7 @@ server {
   index index.html;
 
 ```
-Logo após, reinicie o Nginx usando o comando:
+Logo após, reinicie o serviço do Nginx usando o comando:
 ```sudo systemctl restart nginx```
 
 ### Passo 4 (opcional): Conceder permissão para um usuário editar a página HTML
@@ -57,7 +56,9 @@ Caso deseje que um usuário do sistema (diferente do root) possa editar os arqui
 ```
 chown -R nome_usuario:nome_usuario /var/www/html 
 ```
-### Passo 5: Criar um serviço systemd para o Nginx
+Com isso, o usuário que você concedeu permissão poderá ter livre acesso para editar a paǵina.
+
+### Passo 5: Criar um serviço personalizado no systemd para o Nginx
 Para garantir que o NGINX seja reiniciado automaticamente em caso de falha ou reinicialização do sistema, crie um serviço personalizado usando `systemd`.
 ```
 sudo /etc/systemd/system/nginx-monitorado.service
@@ -85,11 +86,11 @@ WantedBy=multi-user.target
 - after=: Aguarda uma conexão da rede antes do serviço iniciar.
 - Type=forking: Indica que o serviço inicia em segundo plano.
 - PIDFile: Local onde o PID do Nginx é armazenado no sistema.
-- ExecStart, Reload, Stop: Comandos padrão para gerenciar o Nginx
+- ExecStart, Reload, Stop: Comandos padrão para gerenciar o Nginx.
 - Restart=always: Reinicia o nginx caso o processo pare.
 - RestartSec=120: Aguarda 2 minutos antes de reiniciar o Nginx (esse tempo foi escolhido devido possibilitar a verificão do crontab em 1 minuto).
 
-Recarregue as configurações do systemd:
+Recarregue as configurações do systemd com o comando:
 ```
 sudo systemctl daemon-reload
 ```
@@ -101,12 +102,12 @@ Inicie o serviço manualmente:
 ```
 sudo systemctl start nginx-monitorado.service
 ```
-### Passo 6: Teste a conexão do servidor:
-Para conecta-se ao servidor verifique primeiro o IP da sua mmáquina host:
+### Passo 6: Testar a conexão com o servidor Nginx:
+Para conecta-se ao servidor do Nginx verifique primeiro o IP da sua máquina onde está instalado o servidor:
 ```
 ip a
 ```
-Após vizualizar o IP digite no navegador o IP mostrado:
+Após vizualizar o IP, digite no seu navegador Web o IP mostrado:
 ```
 http://SEU_IP_PUBLICO
 ```
@@ -116,24 +117,27 @@ Aqui está um exemplo do que o Nginx deve retornar:
 # Etapa 3: Monitoramento e Notificações
 ### Passo 1: Criar um script em Bash ou Python para monitorar a disponibilidade do site.
 
-Para esta etapa do desafio, optei por utilizar **Shell Script (Bash)** por ser uma linguagem leve, nativa em distribuições Linux e ideal para tarefas automatizadas no sistema.
+Para esta etapa do desafio, optei por utilizar **Shell Script (Bash)** por ser uma linguagem leve, nativa em diversas distribuições Linux e ideal para tarefas automatizadas no sistema.
+
 O objetivo do script é verificar periodicamente se o servidor web Nginx está respondendo corretamente às requisições HTTP. Caso o status de resposta não seja **200 (OK)**, o script envia uma notificação para um canal do Discord utilizando um Webhook previamente configurado, além de registrar a ocorrência em log.
 
 ### Organização do projeto
 
-Para manter o projeto organizado, crie uma pasta na raiz do sistema:
+Para manter o projeto organizado, crie um diretório na raiz do sistema:
 ```
 mkdir /nome_projeto
 ```
-Depois, navegue até a pasta usando:
+Depois, navegue até o mesmo usando:
 ```
 cd /nome_projeto
 ```
-Logo após entrar na pasta, crie o arquivo principal do script de monitoramento e o arquivo que que conterá apenas a URL do webhook do Discord
+Logo após entrar no diretório, crie o arquivo principal do script de monitoramento e o arquivo que que conterá apenas a sua URL do webhook do Discord. Por motivos de segurança, não coloque sua URL gerada pelo discord diretamento no script, ao invés de fazer isso, crie um arquivo fora a parte.
 ```
-nano monitoramento_script.sh
-nano URL_Discord 
+touch monitoramento_script.sh
+touch URL_Discord 
 ```
+Com os arquivos criados, você pode moficar os mesmos usando algum editor de texto de sua prefência.
+
 ### Explicação do funcionamento do script
 - O curl verifica se o servidor NGINX está respondendo via localhost:80.
 - Se o status HTTP for 200, registra no log e exibe “Serviço Online”.
@@ -141,7 +145,7 @@ nano URL_Discord
 - O Webhook é lido a partir do arquivo /nome_projeto/URL_Discord.
 
 ### Permissão de execução
-Antes de agendar o script usando o cron, priemiro torne-o executável com o seguinte comando:
+Antes de agendar o script usando o cron, primeiro torne-o executável com o seguinte comando:
 ```
 chmod +x monitoramento_script.sh
 ```
@@ -167,7 +171,7 @@ Abra o crontab do usuário atual com o comando:
 ```crontab -e```
 Isso abrirá o editor de texto padrão com o arquivo de configuração do cron.
 
-Para agendar a execução do script, adicione a seguinte linha ao final do arquivo para agendar o script:
+Para agendar a execução do script, adicione a seguinte linha ao final do arquivo para agendar a execução do script:
 ```
 * * * * * /nome_do_projeto/monitoramento_script.sh >> /var/log/monitoramento.log
 ```
@@ -181,7 +185,7 @@ Após adicionar a linha, salve e saia do editor. O cron automaticamente aplicar�
 O webhook é uma forma de um sistema notificar outro sistema automaticamente assim que algo acontece. No cenário deste projeto, o webhook é acionado sempre que o script detecta que o servidor está fora do ar.
 
 ### Como o script funciona:
-Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição HTTP (usando curl) para uma URL de Webhook do Discord. O Discord recebe essa requisição e exibe a mensagem automaticamente no canal configurado.
+Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição HTTP (usando curl) para a URL do Webhook no Discord. O Discord recebe essa requisição e exibe a mensagem automaticamente no canal configurado.
 
 ### Como configurar o Webhook:
 - CrieCrie um canal no Discord onde deseja receber as notificações.
@@ -192,7 +196,7 @@ Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição H
 https://discord.com/api/webhooks/SEU_WEBHOOK_ID/SEU_TOKEN
 ```
 ### Segurança
-Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao vez disso, crie um arquivo separado contendo apenas a URL:
+Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao vez disso, crie um arquivo separado contendo apenprocessosas a URL:
 ```
 nano /nome_do_projeto/URL_Discord
 ```
