@@ -12,14 +12,14 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 - WebHook
 
 ## Pré-requisitos:
-- Distribuição Linux (Ubuntu/Debian)
-- Servidor Nginx Instalado
-- Serviço cron Instalado
+- Distribuição Linux (Ubuntu/Debian).
+- Servidor Nginx Instalado.
+- Serviço cron Instalado.
 - WebHook do discord com URL + token de acesso [Como criar um Webhook no discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
 # Etapa 1: Configuração de ambiente na AWS
 ### Passo 1: Criar uma VPC
-Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, iremos usar essa nuvem para subir as instâncias da EC2.
+Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem pode ser usado para subir as instâncias da EC2.
 
 #### Configurações utilizadas:
 
