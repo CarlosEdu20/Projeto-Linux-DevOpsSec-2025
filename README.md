@@ -8,6 +8,9 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 - Shell script
 - cron
 - Amazon EC2
+- Amazon VPC
+- Amazon Sub-redes
+- Amazon Security group
 - Nginx
 - WebHook
 
@@ -21,7 +24,7 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 ### Passo 1: Criar uma VPC
 Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem é usado para subir as instâncias da EC2.
 
-#### Configurações utilizadas:
+#### Configurações utilizadas para criar a VPC:
 
 - **Recursos a serem criados**: `Somente VPC`
 - **Tag de nome**: `VPC_Projeto` *(ou outro nome descritivo)*
@@ -30,7 +33,7 @@ Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como in
 - **Bloco CIDR IPv6**: `Nenhum bloco CIDR IPv6`
 - **Localização**: `Padrão`
 
-### Obervações: 
+### Observações: 
 - O bloco `10.0.0.0/16` permite criar múltiplas sub-redes, como públicas e privadas.
 
 ### Passo 2: Configurar duas sub-redes públicas:
@@ -92,7 +95,7 @@ Para que as instâncias nas sub-redes públicas tenham acesso à internet, é ne
      - `Public-Subnet-2`
 
 ### Etapa 5: Criação da EC2
-Nesta etapa, deve-se criar uma instância EC2 Linux para hospedar o servidor web NGINX e o script de monitoramento.
+Nesta etapa, deve-se criar uma instância EC2 Linux para hospedar o servidor web Nginx e o script de monitoramento.
 
 #### Escolher uma AMI baseada em Linux
 Durante o processo de criação da instância, foi selecionada uma **AMI (Amazon Machine Image)** compatível com o projeto. A AMI escolhida foi o Ubuntu Server 24.04 LTS.
@@ -126,17 +129,14 @@ ssh -i "meu-par-devsecops.pem" ubuntu@SEU_IP_PUBLICO # Esse comando concede aces
 Substitua SEU_IP_PUBLICO pelo IP da instância.
 
 
-
-
-
 # Etapa 2: Configuração e instalação do servidor Web
 ### Passo 1: Instalar o Nginx no (Ubuntu/Debian) e o cron
 Execute o comando de atualização e instalação sendo **root** ou usando o 'sudo'.
 ```
 sudo apt-get update
-sudo apt-get install NGINX
+sudo apt-get install nginx
 ```
-Verifique se o Nginx está funcioando:
+Verifique se o Nginx está funcionando:
 ```
 sudo systemctl status nginx
 ```
@@ -168,10 +168,10 @@ Caso deseje que um usuário do sistema (diferente do root) possa editar os arqui
 ```
 chown -R nome_usuario:nome_usuario /var/www/html 
 ```
-Com isso, o usuário que você concedeu permissão poderá ter livre acesso para editar a paǵina.
+Com isso, o usuário que você concedeu permissão poderá ter livre acesso para editar a página.
 
 ### Passo 5: Criar um serviço personalizado no systemd para o Nginx
-Para garantir que o NGINX seja reiniciado automaticamente em caso de falha ou reinicialização do sistema, crie um serviço personalizado usando `systemd`.
+Para garantir que o Nginx seja reiniciado automaticamente em caso de falha ou reinicialização do sistema, crie um serviço personalizado usando `systemd`.
 ```
 sudo /etc/systemd/system/nginx-monitorado.service
 ```
@@ -215,7 +215,7 @@ Inicie o serviço manualmente:
 sudo systemctl start nginx-monitorado.service
 ```
 ### Passo 6: Testar a conexão com o servidor Nginx:
-Para conecta-se ao servidor do Nginx verifique primeiro o IP da sua máquina onde está instalado o servidor:
+Para conecta-se ao servidor do Nginx verifique primeiro o IP da sua instância onde está instalado o servidor:
 ```
 ip a
 ```
@@ -248,12 +248,12 @@ Logo após entrar no diretório, crie o arquivo principal do script de monitoram
 touch monitoramento_script.sh
 touch URL_Discord 
 ```
-Com os arquivos criados, você pode moficar os mesmos usando algum editor de texto de sua prefência.
+Com os arquivos criados, você pode modificar os mesmos usando algum editor de texto de sua prefência.
 
 ### Explicação do funcionamento do script
 - O curl verifica se o servidor NGINX está respondendo via localhost:80.
 - Se o status HTTP for 200, registra no log e exibe “Serviço Online”.
-- Se o status for diferente de 200, considera que o servidor está fora do ar e envia um arquivo json para um sevidor do discord através do WEbhook, além de registrar no sistema na pasta **/var/log/monitoramento.log**
+- Se o status for diferente de 200, considera que o servidor está fora do ar e envia um arquivo json para um sevidor do discord através do Webhook, além de registrar no sistema na pasta **/var/log/monitoramento.log**
 - O Webhook é lido a partir do arquivo /nome_projeto/URL_Discord.
 
 ### Permissão de execução
@@ -300,7 +300,7 @@ O webhook é uma forma de um sistema notificar outro sistema automaticamente ass
 Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição HTTP (usando curl) para a URL do Webhook no Discord. O Discord recebe essa requisição e exibe a mensagem automaticamente no canal configurado.
 
 ### Como configurar o Webhook:
-- CrieCrie um canal no Discord onde deseja receber as notificações.
+- Crie um canal no Discord onde deseja receber as notificações.
 - Vá em Editar Canal > Integrações > Webhooks > Novo Webhook.
 - Copie a URL gerada. Ela terá o seguinte formato:
 
@@ -308,7 +308,7 @@ Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição H
 https://discord.com/api/webhooks/SEU_WEBHOOK_ID/SEU_TOKEN
 ```
 ### Segurança
-Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao vez disso, crie um arquivo separado contendo apenprocessosas a URL:
+Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao invés disso, crie um arquivo separado contendo apenprocessosas a URL:
 ```
 nano /nome_do_projeto/URL_Discord
 ```
@@ -343,7 +343,7 @@ Para testar se o script está funcionando corretamente, devemos primeiro parar o
 ```
 Anote o PID e execute o comando para matar o processo: 
 ```
-Kill PID # Substitua "PID" pelo número identificado
+Kill <PID> # Substitua "PID" pelo número identificado
 ```
 Depois dessa execução, a saida mostrada será:
 ```
