@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 HTTP_STATUS=$(curl -s -w "%{http_code}" -o /dev/null http://localhost:80)
 DATA=$(date '+%Y-%m-%d %H:%M:%S')
 LOG_PATH="/var/log/monitoramento.log."
