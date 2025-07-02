@@ -2,17 +2,17 @@
 
 
 ## Objetivo: 
-Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desenvolver e testar habilidades em Linux, AWS e automação de processos através da configuração de um ambiente de servidor web monitorado.
+Este projeto consiste em um desafio proposto para a turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desenvolver e testar habilidades em Linux, AWS e automação de processos através da configuração de um ambiente de servidor web monitorado.
 
 ## Tecnologias Usadas:
 - Shell script
-- cron
+- Cron
 - Amazon EC2
 - Amazon VPC
-- Amazon Sub-redes
-- Amazon Security group
+- Amazon Subnets
+- Amazon Security Groups
 - Nginx
-- WebHook
+- Webhook (Discord)
 
 ## Pré-requisitos:
 - Distribuição Linux (Ubuntu/Debian).
@@ -22,7 +22,7 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 
 # Etapa 1: Configuração de ambiente na AWS
 ### Passo 1: Criar uma VPC
-Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem é usado para subir as instâncias da EC2.
+Uma VPC (Virtual Private Cloud) é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem é usada para subir as instâncias da EC2.
 
 #### Configurações utilizadas para criar a VPC:
 
@@ -75,7 +75,7 @@ Para que as instâncias nas sub-redes públicas tenham acesso à internet, é ne
 - No menu lateral, clique em **Gateways da Internet > Criar gateway da internet**.
 - Preencha:
    - **Nome**: `IGW_Projeto`
-- Clique em **Criar**
+- Clique em **Criar**.
 - Após criado, clique em **Ações > Anexar à VPC** e selecione a VPC: `VPC_Projeto`
 
 #### Criar e configurar a tabela de rotas públicas:
@@ -108,19 +108,19 @@ Marcar a opção **Atribuir IP público automaticamente** foi habilitada, permit
 #### Criar grupo de segurança (Security Group)
 Foi configurado um grupo de segurança com as seguintes regras de entrada:
 
-Tipo: SSH, Protocolo: TCP, Porta: 22, Origem: 0.0.0.0/0 (Essa configuração é usada para aceso remoto via terminal).
+Tipo: SSH, Protocolo: TCP, Porta: 22, Origem: 0.0.0.0/0 (Essa configuração é usada para acesso remoto via terminal).
 
-Tipo: HTTP, Protocolo: TCP, Porta: 80, Origem: 0.0.0.0/0 (Essa configuração é usado para acesso ao servidor web (NGINX)).
+Tipo: HTTP, Protocolo: TCP, Porta: 80, Origem: 0.0.0.0/0 (Essa configuração é usada para acesso ao servidor web (Nginx)).
 
 ###  Par de chaves (Key Pair)
 Durante a criação da instância, foi gerado um **par de chaves no formato `.pem`** (exemplo: `meu-par-devsecops.pem`) para acesso seguro via SSH.
 
-A chave foi baixada localmente e é utilizada para autenticação sem senha no terminal. Guarde bem essa chave, sem ela não dar para ter acesso via SSH.
+A chave foi baixada localmente e é utilizada para autenticação sem senha no terminal. Guarde bem essa chave, sem ela não dá para ter acesso via SSH.
 
 ### Acesso à instância via SSH
 Após o lançamento da instância, é possível conectar remotamente via SSH com o seguinte comando (executado no terminal local):
 ```
-chmod 400 meu-par-devsecops.pem # Esse comando concede permissão de execução da sua chave
+chmod 400 meu-par-devsecops.pem # Esse comando concede permissão de leitura.
 ```
 ```
 ssh -i "meu-par-devsecops.pem" ubuntu@SEU_IP_PUBLICO # Esse comando concede acesso via SSH
@@ -140,7 +140,7 @@ Verifique se o Nginx está funcionando:
 ```
 sudo systemctl status nginx
 ```
-A saída desse comando deve mostrar: active (running)
+A saída deste comando deve mostrar: active (running)
 
 ### Passo 2: Criar uma página HTML simples
 Crie e personalize a página HTML da forma que preferir:
@@ -175,7 +175,7 @@ Para garantir que o Nginx seja reiniciado automaticamente em caso de falha ou re
 ```
 sudo /etc/systemd/system/nginx-monitorado.service
 ```
-Pode escolher qualquer nome, mas optei por usar esse para ficar bem descritivo. Após criar o serviço, coloque essas devidas configurações:
+Pode escolher qualquer nome, mas optei por usar esse, para ficar bem descritivo. Após criar o serviço, coloque essas devidas configurações:
 ```
 [Unit]
 Description=Este serviço garante a reinicialização automática do servidor Nginx em caso de interrupção 
@@ -215,7 +215,7 @@ Inicie o serviço manualmente:
 sudo systemctl start nginx-monitorado.service
 ```
 ### Passo 6: Testar a conexão com o servidor Nginx:
-Para conecta-se ao servidor do Nginx verifique primeiro o IP da sua instância onde está instalado o servidor:
+Para conectar-se ao servidor do Nginx verifique primeiro o IP da sua instância onde está instalado o servidor:
 ```
 ip a
 ```
@@ -243,15 +243,15 @@ Depois, navegue até o mesmo usando:
 ```
 cd /nome_projeto
 ```
-Logo após entrar no diretório, crie o arquivo principal do script de monitoramento e o arquivo que que conterá apenas a sua URL do webhook do Discord. Por motivos de segurança, não coloque sua URL gerada pelo discord diretamento no script, ao invés de fazer isso, crie um arquivo fora a parte.
+Logo após entrar no diretório, crie o arquivo principal do script de monitoramento e o arquivo que que conterá apenas a sua URL do webhook do Discord. Por motivos de segurança, não coloque sua URL gerada pelo discord diretamente no script, ao invés de fazer isso, crie um arquivo fora à parte.
 ```
 touch monitoramento_script.sh
 touch URL_Discord 
 ```
-Com os arquivos criados, você pode modificar os mesmos usando algum editor de texto de sua prefência.
+Com os arquivos criados, você pode modificar os mesmos usando algum editor de texto de sua preferência.
 
 ### Explicação do funcionamento do script
-- O curl verifica se o servidor NGINX está respondendo via localhost:80.
+- O curl verifica se o servidor Nginx está respondendo via localhost:80.
 - Se o status HTTP for 200, registra no log e exibe “Serviço Online”.
 - Se o status for diferente de 200, considera que o servidor está fora do ar e envia um arquivo json para um sevidor do discord através do Webhook, além de registrar no sistema na pasta **/var/log/monitoramento.log**
 - O Webhook é lido a partir do arquivo /nome_projeto/URL_Discord.
@@ -308,17 +308,17 @@ Se ele detecta que o NGINX está fora do ar, o script dispara uma requisição H
 https://discord.com/api/webhooks/SEU_WEBHOOK_ID/SEU_TOKEN
 ```
 ### Segurança
-Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao invés disso, crie um arquivo separado contendo apenprocessosas a URL:
+Por motivos de segurança, não é recomendado deixar essa URL visível diretamente dentro do script. Ao invés disso, crie um arquivo separado contendo a URL disponibilizada pelo discord:
 ```
 nano /nome_do_projeto/URL_Discord
 ```
-Agora dentro desse arquivo, cole a URL do webhook gerada no Discord.
+Agora dentro desse arquivo, cole a URL do webhook gerada no discord.
 
-Com isso, o scrip pode acessar essa URL através dessa variável
+Com isso, o script pode acessar essa URL através dessa variável
 ```
 URL_DISCORD=$(cat /nome_do_projeto/URL_Discord)
 ```
-Com isso, o sistema estará pronto para enviar alertas em tempo real sempre que o NGINX ficar indisponível.
+Com isso, o sistema estará pronto para enviar alertas em tempo real sempre que o Nginx icar indisponível.
 
 # Etapa 4: Automação e Testes
 ### Passo 1: Como executar o arquivo:
@@ -328,6 +328,7 @@ Para executar o script use o comanndo dentro da pasta:
 ```
 Após rodar o script, a saida esperada deve ser essa:
 ```Serviço Online```
+
 Este log é armazenado no arquivo dentro da pasta do sistema ** /var/log/monitoramento.log**
 ```
 [2025-06-30 09:10:01] O servidor NGINX está funcionando (HTTP 200) 
@@ -364,6 +365,47 @@ O webhook dispará um processo assim que o cron detectar que o servidor está fo
 ![image](https://github.com/user-attachments/assets/44c511c2-5e7d-4ad8-a5fa-62218724facc)
 
 Isso significa que o script de monitoramento está funcionando com sucesso.
+
+### Atualizações Futuras:
+As próximas etapas do projeto visam expandir suas capacidades de automação, escalabilidade e observabilidade dentro da AWS.
+
+#### Automação com o User data (EC2)
+Pode-se usar o User data para automatizar a configuração inicial da instância EC2 no momento em que ela é criada.
+
+Essa funcionalidade permite executar comandos de shell logo no primeiro boot da máquina, como:
+
+- Atualizar os pacotes do sistema;
+- Instalar o NGINX automaticamente;
+- Criar um arquivo `index.html` dentro de `/var/www/html`;
+- Copiar ou gerar o script de monitoramento;
+- Configurar permissões e ativar o `cron` ou `systemd` para o script funcionar.
+
+#### Criar um template usando o CloudFormation:
+O **AWS CloudFormation** permite definir toda a infraestrutura da nuvem como código (IaC), utilizando arquivos no formato YAML ou JSON. Isso possibilita o provisionamento automático e padronizado dos recursos AWS necessários para o projeto.
+
+Com o CloudFormation, é possível criar de forma automatizada:
+
+- VPC personalizada;
+- Sub-redes públicas e privadas;
+- Internet Gateway e tabela de rotas;
+- Grupo de segurança (Security Group);
+- Instância EC2 configurada com User Data.
+- 
+#### Monitoramento avançado usando o CloudWatch:
+#### Monitoramento avançado usando o CloudWatch:
+
+O **Amazon CloudWatch** é o serviço da AWS para monitoramento e observabilidade de aplicações, recursos e infraestrutura.  
+Ele pode ser integrado ao projeto para acompanhar o funcionamento do servidor web e gerar alertas em tempo real.
+
+##### Objetivo:
+- Monitorar a **disponibilidade do NGINX**;
+- Coletar métricas personalizadas a partir do **script de monitoramento**;
+- Gerar **alarmes automáticos** com base no status do servidor;
+- (Opcional) Integrar com o **Amazon SNS** para envio de notificações por e-mail, SMS ou outro canal.
+
+
+
+
 
 
 
