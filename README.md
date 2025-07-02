@@ -110,14 +110,20 @@ Tipo: SSH, Protocolo: TCP, Porta: 22, Origem: 0.0.0.0/0 (Essa configuração é 
 Tipo: HTTP, Protocolo: TCP, Porta: 80, Origem: 0.0.0.0/0 (Essa configuração é usado para acesso ao servidor web (NGINX)).
 
 ###  Par de chaves (Key Pair)
-Durante a criação, foi gerado um **par de chaves no formato `.pem`** (ex: `meu-par-devsecops.pem`) para acesso seguro via SSH.
+Durante a criação da instância, foi gerado um **par de chaves no formato `.pem`** (exemplo: `meu-par-devsecops.pem`) para acesso seguro via SSH.
 
+A chave foi baixada localmente e é utilizada para autenticação sem senha no terminal. Guarde bem essa chave, sem ela não dar para ter acesso via SSH.
 
+### Acesso à instância via SSH
+Após o lançamento da instância, é possível conectar remotamente via SSH com o seguinte comando (executado no terminal local):
+```
+chmod 400 meu-par-devsecops.pem # Esse comando concede permissão de execução da sua chave
+```
+```
+ssh -i "meu-par-devsecops.pem" ubuntu@SEU_IP_PUBLICO # Esse comando concede acesso via SSH
+```
 
-
-
-
-
+Substitua SEU_IP_PUBLICO pelo IP da instância.
 
 
 
