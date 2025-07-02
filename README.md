@@ -94,7 +94,7 @@ Para que as instâncias nas sub-redes públicas tenham acesso à internet, é ne
      - `Public-Subnet-1`
      - `Public-Subnet-2`
 
-### Etapa 5: Criação da EC2
+### Passo 5: Criação da EC2
 Nesta etapa, deve-se criar uma instância EC2 Linux para hospedar o servidor web Nginx e o script de monitoramento.
 
 #### Escolher uma AMI baseada em Linux
