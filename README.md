@@ -1,8 +1,8 @@
-# Projeto Linux DevOpsSec 2025 | Monitoramento do servidor Web Nginx com Linux e AWS
+# Projeto Linux DevSecOps 2025 | Monitoramento do servidor Web Nginx com Linux e AWS
 
 
 ## Objetivo: 
-Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desensolver e testar habilidades em Linux, AWS e automação de processos através da configuração de um ambiente de servidor web monitorado.
+Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Programa de Bolsas DevSecOps. O mesmo fundamenta-se em desenvolver e testar habilidades em Linux, AWS e automação de processos através da configuração de um ambiente de servidor web monitorado.
 
 ## Tecnologias Usadas:
 - Shell script
@@ -19,7 +19,7 @@ Este projeto consiste em um desafio proposto para turma da PB ABR 2025 do Progra
 
 # Etapa 1: Configuração de ambiente na AWS
 ### Passo 1: Criar uma VPC
-Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem pode ser usado para subir as instâncias da EC2.
+Uma VPC é uma parte isolada da Nuvem AWS preenchida por objetos da AWS, como instâncias do Amazon EC2. Neste projeto, essa nuvem é usado para subir as instâncias da EC2.
 
 #### Configurações utilizadas:
 
