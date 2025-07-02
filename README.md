@@ -279,6 +279,7 @@ Se o terminal exibir as opções disponíveis (Options), significa que o cron j�
 O cron é um serviço de agendamento nativo presente na maioria das distribuições Linux. Ele permite que comandos ou scripts sejam executados automaticamente em intervalos regulares definidos pelo usuário, como minutos, horas, dias ou semanas. No contexto desse projeto, vamos utilizá-lo para agendar a execução do script de monitoramento a cada 1 minuto. 
 
 **Agendar o script**
+
 Abra o crontab do usuário atual com o comando:
 ```crontab -e```
 Isso abrirá o editor de texto padrão com o arquivo de configuração do cron.
