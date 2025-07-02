@@ -1,4 +1,4 @@
-# Projeto Linux DevOpsSec 2025 | Monitaramento do servidor Web Nginx com Linux e AWS
+# Projeto Linux DevOpsSec 2025 | Monitoramento do servidor Web Nginx com Linux e AWS
 
 
 ## Objetivo: 
