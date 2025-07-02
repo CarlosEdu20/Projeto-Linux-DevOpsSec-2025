@@ -91,6 +91,36 @@ Para que as instâncias nas sub-redes públicas tenham acesso à internet, é ne
      - `Public-Subnet-1`
      - `Public-Subnet-2`
 
+### Etapa 5: Criação da EC2
+Nesta etapa, deve-se criar uma instância EC2 Linux para hospedar o servidor web NGINX e o script de monitoramento.
+
+#### Escolher uma AMI baseada em Linux
+Durante o processo de criação da instância, foi selecionada uma **AMI (Amazon Machine Image)** compatível com o projeto. A AMI escolhida foi o Ubuntu Server 24.04 LTS.
+
+#### Configurar a EC2 na sub-rede pública
+A instância foi configurada na sub-rede `Public-Subnet-2`, uma das sub-redes criadas na VPC personalizada (`VPC_DevSecOps_2025`).
+
+Marcar a opção **Atribuir IP público automaticamente** foi habilitada, permitindo o acesso externo via SSH e HTTP.
+
+#### Criar grupo de segurança (Security Group)
+Foi configurado um grupo de segurança com as seguintes regras de entrada:
+
+Tipo: SSH, Protocolo: TCP, Porta: 22, Origem: 0.0.0.0/0 (Essa configuração é usada para aceso remoto via terminal).
+
+Tipo: HTTP, Protocolo: TCP, Porta: 80, Origem: 0.0.0.0/0 (Essa configuração é usado para acesso ao servidor web (NGINX)).
+
+###  Par de chaves (Key Pair)
+Durante a criação, foi gerado um **par de chaves no formato `.pem`** (ex: `meu-par-devsecops.pem`) para acesso seguro via SSH.
+
+
+
+
+
+
+
+
+
+
 
 
 # Etapa 2: Configuração e instalação do servidor Web
