@@ -359,7 +359,7 @@ Serviço indisponível
 Após isso, aguarde a execução do cron.
 
 
-### Etapa 3: Alerta emitido no discord
+### Passo 3: Alerta emitido no discord
 O webhook dispará um processo assim que o cron detectar que o servidor está fora do ar. Como mostra essa imagem:
 
 ![image](https://github.com/user-attachments/assets/44c511c2-5e7d-4ad8-a5fa-62218724facc)
