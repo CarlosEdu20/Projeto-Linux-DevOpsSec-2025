@@ -390,8 +390,7 @@ Com o CloudFormation, é possível criar de forma automatizada:
 - Internet Gateway e tabela de rotas;
 - Grupo de segurança (Security Group);
 - Instância EC2 configurada com User Data.
-- 
-#### Monitoramento avançado usando o CloudWatch:
+  
 #### Monitoramento avançado usando o CloudWatch:
 
 O **Amazon CloudWatch** é o serviço da AWS para monitoramento e observabilidade de aplicações, recursos e infraestrutura.  
