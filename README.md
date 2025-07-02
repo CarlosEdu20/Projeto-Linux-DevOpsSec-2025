@@ -366,7 +366,7 @@ O webhook dispará um processo assim que o cron detectar que o servidor está fo
 
 Isso significa que o script de monitoramento está funcionando com sucesso.
 
-### Atualizações Futuras:
+# Atualizações Futuras:
 As próximas etapas do projeto visam expandir suas capacidades de automação, escalabilidade e observabilidade dentro da AWS.
 
 #### Automação com o User data (EC2)
